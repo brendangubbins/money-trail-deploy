@@ -1,0 +1,47 @@
+
+services:
+  frontend:
+    build: ./money-trail-ui
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./money-trail-ui:/app
+      - /app/node_modules
+    networks:
+      - app-net
+
+  backend:
+    build: ./money-trail
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./money-trail:/app
+    networks:
+      - app-net
+
+  postgres:
+    image: postgres:17
+    env_file: .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./backend/docker/postgres/contribution_data.txt:/docker-entrypoint-initdb.d/contribution_data.txt:ro
+      - ./backend/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+    networks:
+      - app-net
+
+volumes:
+  pg_data:
+  node_modules:
+
+networks:
+  app-net:
