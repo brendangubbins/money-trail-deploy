@@ -1,6 +1,0 @@
-[submodule "money-trail"]
-	path = money-trail
-	url = https://github.com/brendangubbins/money-trail
-[submodule "money-trail-ui"]
-	path = money-trail-ui
-	url = https://github.com/brendangubbins/money-trail-ui
